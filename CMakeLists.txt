@@ -9,6 +9,7 @@ set(APP_TARGET robot_car)
 
 include(${MBED_PATH}/tools/cmake/app.cmake)
 
+cmake_policy(SET CMP0175 OLD)
 project(${APP_TARGET})
 
 add_subdirectory(${MBED_PATH})

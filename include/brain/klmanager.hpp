@@ -35,10 +35,6 @@
 
 /* The mbed library */
 #include <mbed.h>
-#include <periodics/alerts.hpp>
-#include <periodics/imu.hpp>
-#include <periodics/instantconsumption.hpp>
-#include <periodics/totalvoltage.hpp>
 #include <brain/robotstatemachine.hpp>
 #include <periodics/resourcemonitor.hpp>
 #include <brain/globalsv.hpp>
@@ -54,10 +50,6 @@ namespace brain
         public:
             /* Construnctor */
             CKlmanager(
-                periodics::CAlerts& f_alerts,
-                periodics::CImu& f_imu,
-                periodics::CInstantConsumption& f_instant,
-                periodics::CTotalVoltage& f_baterry,
                 brain::CRobotStateMachine& f_robotStateMachine,
                 periodics::CResourcemonitor& f_resourceM
             );
@@ -70,10 +62,6 @@ namespace brain
 
         private:
             /* private variables & method member */
-            periodics::CAlerts& m_alerts;
-            periodics::CImu& m_imu;
-            periodics::CInstantConsumption& m_instant;
-            periodics::CTotalVoltage& m_baterry;
             brain::CRobotStateMachine& m_robotStateMachine;
             periodics::CResourcemonitor& m_resourceM;
 
