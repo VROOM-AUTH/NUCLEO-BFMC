@@ -104,23 +104,6 @@ namespace brain{
                 m_serialPort.write(buffer, strlen(buffer));
                 m_state = 0;
                 break;
-
-            // State responsible for configuring the vehicle's speed and steering over a specified duration.
-            case 4:
-                // If the accumulated ticks exceed the target time, stop the movement and deactivate the task.
-                if(m_ticksRun >= m_targetTime+m_period)
-                {
-                    m_speedingControl.setSpeed(0);
-                    m_steeringControl.setAngle(0);
-                    m_state = 0;
-                    m_serialPort.write("@vcd:0;0;0;;\r\n", 15);
-                }
-                else
-                {
-                    // Otherwise, increment the tick counter.
-                    m_ticksRun += m_period;
-                }
-                break;
         }
     }
 
@@ -223,47 +206,6 @@ namespace brain{
         else
         {
             sprintf(b,"syntax error");
-        }
-    }
-
-    /** \brief  Serial callback actions for brake command
-     *
-     * This method aims to change the state of controller to brake and sets the steering angle to the received value. 
-     *
-     * @param a                   string to read data 
-     * @param b                   string to write data
-     * 
-     */
-    void CRobotStateMachine::serialCallbackVCDcommand(char const * message, char * response)
-    {
-        int speed, steer;
-        uint8_t time_deciseconds;
-
-        uint8_t parsed = sscanf(message, "%d;%d;%hhu", &speed, &steer, &time_deciseconds);
-
-        if(uint8_globalsV_value_of_kl != 30){
-            sprintf(response,"kl 30 is required!!");
-            return;
-        }
-
-        m_targetTime = time_deciseconds;
-
-        if(parsed == 3 && speed <= 500 && speed >= -500 && steer <= 232 && steer >= -232)
-        {
-            sprintf(response, "%d;%d;%d", speed, steer, time_deciseconds);
-
-            m_ticksRun = 0;
-
-            m_targetTime = time_deciseconds * scale_ds_to_ms;
-
-            m_state = 4;
-
-            m_steeringControl.setAngle(steer);
-            m_speedingControl.setSpeed(-speed);
-        }
-        else
-        {
-            sprintf(response, "something went wrong");
         }
     }
 

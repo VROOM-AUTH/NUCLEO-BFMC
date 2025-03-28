@@ -34,8 +34,6 @@
 #include <chrono>
 /* Header file for the blinker functionality */
 #include <periodics/blinker.hpp>
-/* Header file for the klmanager functionality */
-#include <brain/klmanager.hpp>
 /* Header file for the resourceMonitor functionality */
 #include <periodics/resourcemonitor.hpp>
 /* Header file for global variables */

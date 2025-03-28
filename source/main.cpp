@@ -51,15 +51,11 @@ brain::CRobotStateMachine g_robotstatemachine(g_baseTick * 50, g_rpi, g_steering
 
 periodics::CResourcemonitor g_resourceMonitor(g_baseTick * 5000, g_rpi);
 
-brain::CKlmanager g_klmanager(g_robotstatemachine, g_resourceMonitor);
-
 // Map for redirecting messages with the key and the callback functions. If the message key equals to one of the enumerated keys, than it will be applied the paired callback function.
 drivers::CSerialMonitor::CSerialSubscriberMap g_serialMonitorSubscribers = {
     {"speed",          mbed::callback(&g_robotstatemachine, &brain::CRobotStateMachine::serialCallbackSPEEDcommand)},
     {"steer",          mbed::callback(&g_robotstatemachine, &brain::CRobotStateMachine::serialCallbackSTEERcommand)},
     {"brake",          mbed::callback(&g_robotstatemachine, &brain::CRobotStateMachine::serialCallbackBRAKEcommand)},
-    {"vcd",            mbed::callback(&g_robotstatemachine, &brain::CRobotStateMachine::serialCallbackVCDcommand)},
-    {"kl",             mbed::callback(&g_klmanager,         &brain::CKlmanager::serialCallbackKLCommand)},
     {"resourceMonitor",mbed::callback(&g_resourceMonitor,   &periodics::CResourcemonitor::serialCallbackRESMONCommand),}
 };
 
