@@ -59,6 +59,7 @@ namespace brain{
         , m_period((uint16_t)(f_period.count()))
         , m_speed(0)
         , m_steering(0)
+        , m_lastSpeedTime(std::chrono::steady_clock::now())
     {
     }
 
@@ -78,6 +79,12 @@ namespace brain{
     void CRobotStateMachine::_run()
     {   
         char buffer[100];
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastSpeedTime).count();
+        if (elapsed > 1000 && m_state != 3) {
+            m_state = 3;
+        }
+
         switch(m_state)
         {
             // speed state - control the dc motor rotation speed and the steering angle. 
@@ -133,6 +140,8 @@ namespace brain{
                 m_state = 1;
 
                 m_speed = l_speed;
+
+                m_lastSpeedTime = std::chrono::steady_clock::now();
             }
             else{
                 sprintf(b,"kl 30 is required!!");

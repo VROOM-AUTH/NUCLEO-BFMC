@@ -91,6 +91,8 @@ namespace brain
 
             int m_speed;
             int m_steering;
+
+            std::chrono::steady_clock::time_point m_lastSpeedTime;
         
     }; // class CRobotStateMachine
 }; // namespace brain
