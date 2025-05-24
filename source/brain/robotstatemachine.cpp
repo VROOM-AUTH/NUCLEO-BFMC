@@ -81,7 +81,7 @@ namespace brain{
         char buffer[100];
         auto now = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastSpeedTime).count();
-        if (elapsed > 1000 && m_state != 3) {
+        if (elapsed > 2000 && m_state != 3) {
             m_state = 3;
         }
 
