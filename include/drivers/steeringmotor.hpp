@@ -76,29 +76,21 @@ namespace drivers
         private:
             /** @brief PWM output pin */
             PwmOut m_pwm_pin;
-            /** @brief 0 default */
-            int zero_default = 153441; //0.07672070(7.6% duty cycle) * 20000µs(ms_period) * 100(scale factor)
-            /** @brief ms_period */
-            int8_t ms_period = 20; // 20000µs
-            /** @brief step_value */
-            int step_value = 1901; // 0.0009505 * 20000µs(ms_period) * 100(scale factor)
+            /** @brief PWM period in milliseconds */
+            const int8_t ms_period = 20; // 20ms period
+            /** @brief Minimum pulse width in microseconds (for -30 deg) */
+            const uint16_t min_pulsewidth_us = 1000; // 1ms
+            /** @brief Maximum pulse width in microseconds (for +30 deg) */
+            const uint16_t max_pulsewidth_us = 2000; // 2ms
+            /** @brief Center pulse width in microseconds (for 0 deg) */
+            const uint16_t center_pulsewidth_us = 1500; // 1.8ms
             /** @brief Inferior limit */
             const int m_inf_limit;
             /** @brief Superior limit */
             const int m_sup_limit;
 
-            /* convert angle degree to duty cycle for pwm signal */
-            int conversion(int f_angle); //angle to duty cycle
-
-            /* interpolate the step value and the zero default based on the steering value */
-            std::pair<int, int> interpolate(int steering, const int steeringValueP[], const int steeringValueN[], const int stepValues[], const int zeroDefaultValues[], int size);
-
-            // Predefined values for steering reference and interpolation
-            // All the values have a scale factor applied (*100)
-            const int steeringValueP[3] = {0, 150, 200};
-            const int steeringValueN[3] = {0, -150, -200};
-            const int stepValues[3] = {1901, 1718, 1903};
-            const int zeroDefaultValues[3] = {153441, 154297, 153441};
+            /* convert angle degree to pulse width in microseconds for pwm signal */
+            uint16_t conversion(int f_angle);
     }; // class ISteeringCommand
 }; // namespace drivers
 

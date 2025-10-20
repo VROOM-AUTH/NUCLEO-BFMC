@@ -83,6 +83,7 @@ namespace brain{
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastSpeedTime).count();
         if (elapsed > 2000 && m_state != 3) {
             m_state = 3;
+            // m_speed = 0; // If you only want to brake without changing steering
         }
 
         switch(m_state)

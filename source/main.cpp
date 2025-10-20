@@ -43,10 +43,10 @@ UnbufferedSerial g_rpi(USBTX, USBRX, 115200);
 periodics::CBlinker g_blinker(g_baseTick * 500, LED1);
 
 //PIN for a motor speed in ms, inferior and superior limit
-drivers::CSpeedingMotor g_speedingDriver(D0, -500, 500); //speed in cm/s
+drivers::CSpeedingMotor g_speedingDriver(D3, -500, 500); //speed in cm/s
 
 //PIN for angle in servo degrees, inferior and superior limit
-drivers::CSteeringMotor g_steeringDriver(D5, -250, 250);
+drivers::CSteeringMotor g_steeringDriver(D4, -30, 30);
 
 // Create the motion controller, which controls the robot states and the robot moves based on the transmitted command over the serial interface.
 brain::CRobotStateMachine g_robotstatemachine(g_baseTick * 50, g_rpi, g_steeringDriver, g_speedingDriver);
