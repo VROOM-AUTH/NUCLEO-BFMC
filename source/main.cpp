@@ -114,6 +114,7 @@ uint8_t loop()
  * 
  * @return int Error level codes error's type.  
  */
+
 int main() 
 {   
     uint8_t  l_errorLevel = setup();

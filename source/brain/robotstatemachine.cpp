@@ -30,6 +30,7 @@
 
 
 #include <brain/robotstatemachine.hpp>
+#include "mbed.h"
 
 #define scale_ds_to_ms 100
 
@@ -43,6 +44,10 @@ namespace brain{
      * @param f_steeringControl     reference to steering motor control interface
      * @param f_speedingControl     reference to brushless motor control interface
      */
+
+    Timer g_safetyTimer; // to track connection health
+    const int g_SAFETY_TIMEOUT_MS = 1000; // If we get no command for 1 sec we stop
+
     CRobotStateMachine::CRobotStateMachine(
             std::chrono::milliseconds                      f_period,
             UnbufferedSerial&             f_serialPort,
@@ -61,6 +66,7 @@ namespace brain{
         , m_steering(0)
         , m_lastSpeedTime(std::chrono::steady_clock::now())
     {
+        g_safetyTimer.start(); // start the safety timer
     }
 
     /** @brief  CRobotStateMachine class destructor
@@ -79,11 +85,17 @@ namespace brain{
     void CRobotStateMachine::_run()
     {   
         char buffer[100];
-        auto now = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastSpeedTime).count();
-        if (elapsed > 2000 && m_state != 3) {
+        // old implementation of safety timer
+        // auto now = std::chrono::steady_clock::now();
+        // auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastSpeedTime).count();
+        // if (elapsed > 2000 && m_state != 3) {
+        //     m_state = 3;
+        //     // m_speed = 0; // If you only want to brake without changing steering
+        // }
+
+        // new implementation of safety timer
+        if (g_safetyTimer.read_ms() > g_SAFETY_TIMEOUT_MS && m_state != 3) {
             m_state = 3;
-            // m_speed = 0; // If you only want to brake without changing steering
         }
 
         switch(m_state)
@@ -127,6 +139,8 @@ namespace brain{
      */
     void CRobotStateMachine::serialCallbackSPEEDcommand(char const * a, char * b)
     {
+        g_safetyTimer.reset(); // we got a command, reset timer
+
         int l_speed;
         uint32_t l_res = sscanf(a,"%d",&l_speed);
         if (1 == l_res)
@@ -165,6 +179,8 @@ namespace brain{
      */
     void CRobotStateMachine::serialCallbackSTEERcommand(char const * a, char * b)
     {
+        g_safetyTimer.reset(); // we got a command, reset timer
+
         int l_angle;
         uint32_t l_res = sscanf(a,"%d",&l_angle);
         if (1 == l_res)
